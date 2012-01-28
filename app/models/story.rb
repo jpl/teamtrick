@@ -9,10 +9,10 @@ class Story < ActiveRecord::Base
   validates_presence_of :importance
   validates_numericality_of :importance
 
-  named_scope :with_project, lambda{|p| {:conditions => {:project_id => p.id}} }
-  named_scope :by_importance, :order => "importance DESC"
+  scope :with_project, lambda{|p| {:conditions => {:project_id => p.id}} }
+  scope :by_importance, :order => "importance DESC"
 
-  named_scope :uncompleted, 
+  scope :uncompleted, 
     :conditions => 'ID IN (SELECT s.id 
                      FROM stories s
                     WHERE NOT EXISTS (SELECT 1 
@@ -24,7 +24,7 @@ class Story < ActiveRecord::Base
                     GROUP BY story_id
                     HAVING (SUM(hours_left) > 0))'
 
-  named_scope :completed, 
+  scope :completed, 
     :joins=> :tasks,
     :group => "tasks.story_id", 
     :select=>'stories.*',

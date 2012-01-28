@@ -21,7 +21,7 @@ class WorkHour < ActiveRecord::Base
 
   # Returns the Sprint during the WorkHours was done.
   def sprint
-    Sprint.find( :first, :conditions => "start_date < '#{date.to_time.to_s(:db)}' AND finish_date > '#{date.to_time.to_s(:db)}' AND project_id = '#{project.id}'") if project
+    Sprint.first(:conditions => "start_date < '#{date.to_time.to_s(:db)}' AND finish_date > '#{date.to_time.to_s(:db)}' AND project_id = '#{project.id}'") if project
   end
 
   # The Project of this WorkHour.

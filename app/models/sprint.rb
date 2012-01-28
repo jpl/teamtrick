@@ -16,9 +16,9 @@ class Sprint < ActiveRecord::Base
   has_many :stories, :through => :plannings
   has_many :commitments
 
-  named_scope :with_project, lambda{|p| {:conditions => {:project_id => p.id}}}
-  named_scope :before, lambda{|date| {:conditions => ['finish_date < ?', date]}}
-  named_scope :by_start_date, :order => "start_date ASC"
+  scope :with_project, lambda{|p| {:conditions => {:project_id => p.id}}}
+  scope :before, lambda{|date| {:conditions => ['finish_date < ?', date]}}
+  scope :by_start_date, :order => "start_date ASC"
 
   # Add errors to the ActiveRecord instance in case that
   # start_date and finish_date are not valid. It will check
@@ -40,7 +40,7 @@ class Sprint < ActiveRecord::Base
 
       # Checking that start_date and finish_date aren't inside an existent sprint
       {:start_date => start_date, :finish_date => finish_date}.each do |key, date|
-        if Sprint.find( :first, 
+        if Sprint.first(
                        :conditions => ["start_date <= ? AND finish_date >= ? AND id != ? AND project_id == ?", date, date, id || 0, project.id || 0]
                       )
           errors.add key, "overlaps an existing sprint"
@@ -48,7 +48,7 @@ class Sprint < ActiveRecord::Base
       end
 
       # Checking that start_date and finish_date aren't surrounding an existent sprint
-      if Sprint.find( :first, :conditions => ["start_date >= ? AND finish_date <= ? AND id != ? AND project_id == ?", start_date, finish_date, id || 0, project.id || 0])
+      if Sprint.first(:conditions => ["start_date >= ? AND finish_date <= ? AND id != ? AND project_id == ?", start_date, finish_date, id || 0, project.id || 0])
         errors.add :start_date, "surrounds an existing sprint"
       end
 

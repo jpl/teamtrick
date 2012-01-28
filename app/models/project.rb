@@ -9,7 +9,9 @@ class Project < ActiveRecord::Base
   has_many :stories, :order => "importance DESC"
   has_many :sprints
 
-  named_scope :for_user, lambda{|u| u.admin? ? {} : {:joins => :duties, :conditions => ['duties.user_id = ?', u.id]}}
+  scope :for_user, lambda{|u| 
+    u.admin? ? {} : joins(:duties).where('duties.user_id = ?', u.id)
+  }
 
   def authorized_for_read?
     if current_user && existing_record_check?

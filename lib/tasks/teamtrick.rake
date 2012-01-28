@@ -21,10 +21,10 @@ namespace :teamtrick do
     system 'script/unpack'
   end
 
-  desc 'This will set RAILS_ENV to "production"'
+  desc 'This will set Rails.env to "production"'
   task :force_production_environment do
     puts "Forcing production environment"
-    RAILS_ENV = 'production'
+    Rails.env = 'production'
   end
 
   desc "This will unpack gems and configure the application"
