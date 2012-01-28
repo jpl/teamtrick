@@ -1,27 +1,12 @@
-# Filters added to this controller apply to all controllers in the application.
-# Likewise, all the methods added will be available for all controllers.
+require 'graph_data_system'
 
 class ApplicationController < ActionController::Base
-  include AuthenticatedSystem
+  protect_from_forgery
   include GraphDataSystem
-
-  # Commented this because helper methods where conflicting
-  # when overriding ActiveScaffold fields
-  # helper :all # include all helpers, all the time
-
-  # See ActionController::RequestForgeryProtection for details
-  # Uncomment the :secret if you're not using the cookie session store
-  protect_from_forgery # :secret => '87b0dcb17682a3fe4ecbd024e8535924'
-
-  # See ActionController::Base for details 
-  # Uncomment this to filter the contents of submitted sensitive data parameters
-  # from your application log (in this case, all fields with names like "password"). 
-  
 
   # Be sure to include AuthenticationSystem in Application Controller instead
   # If you want "remember me" functionality, add this before_filter to Application Controller
-  before_filter :login_from_cookie
-  before_filter :login_required
+  before_filter :require_user
   # before_filter :check_permissions
 
   helper_method :current_user, 
@@ -34,15 +19,41 @@ class ApplicationController < ActionController::Base
   rescue_from ActiveScaffold::ActionNotAllowed, :with => :permissions_error
 
   private
-
-  # TODO AuthenticatedSystem#login_required
-  # must be used instead of this
-  def require_login
-    if !session[:user]
-      flash[:notice] = 'Please log in'
-      redirect_to login_path
+  def current_user_session
+    return @current_user_session if defined?(@current_user_session)
+    @current_user_session = UserSession.find
+  end
+  
+  def current_user
+    return @current_user if defined?(@current_user)
+    @current_user = current_user_session && current_user_session.record
+  end
+  
+  def require_user
+    unless current_user
+      store_location
+      flash[:notice] = "You must be logged in to access this page"
+      redirect_to new_user_session_url
       return false
     end
+  end
+
+  def require_no_user
+    if current_user
+      store_location
+      flash[:notice] = "You must be logged out to access this page"
+      redirect_to root_url
+      return false
+    end
+  end
+  
+  def store_location
+    session[:return_to] = request.url
+  end
+  
+  def redirect_back_or_default(default)
+    redirect_to(session[:return_to] || default)
+    session[:return_to] = nil
   end
 
   def current_project

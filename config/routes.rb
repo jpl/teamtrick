@@ -1,7 +1,7 @@
 Teamtrick::Application.routes.draw do
+  resources :user_sessions
+  root :to => "projects#index" # optional, this just sets the root route
   match 'message' => 'message#index', :as => :message
-  match 'login' => 'account#login', :as => :login
-  match 'logout' => 'account#logout', :as => :logout
   match 'my_profile' => 'users#my_profile', :as => :my_profile
   resources :projects do
       resources :sprints do
@@ -15,7 +15,6 @@ Teamtrick::Application.routes.draw do
   end
 
   match '/projects/:id/stats_for_date/:date' => 'projects#stats_for_date', :as => :project_stats_for_date
-  match '/' => 'projects#index'
   resources :sprints
   resources :commitments
   resources :users

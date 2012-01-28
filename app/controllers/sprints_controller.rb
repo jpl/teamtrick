@@ -48,8 +48,8 @@ class SprintsController < ApplicationController
       else
         redirect_to project_sprint_planning_path(@record.project, @record)
       end
-    when "closed" : redirect_to project_sprint_closed_path(@record.project, @record)
-    when "in_course" : redirect_to project_sprint_current_path(@record.project, @record)
+    when "closed" then redirect_to project_sprint_closed_path(@record.project, @record)
+    when "in_course" then redirect_to project_sprint_current_path(@record.project, @record)
     else
       @message = "This page is not implemented yet. Coming soon : )"
       render 'message/index'

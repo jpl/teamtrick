@@ -51,9 +51,9 @@ class ProjectsController < ApplicationController
 
   protected
 
-  def custom_finder_options
-    Project.for_user(current_user).proxy_options
-  end
+  # def custom_finder_options
+  #  Project.for_user(current_user).proxy_options
+  #end
 
   def create_authorized?
     current_user.admin?

@@ -1,3 +1,4 @@
+# encoding: UTF-8
 namespace :pfc do
   desc "This will create a new project full of sample data"
   task :generate_sample_project => :environment do

@@ -1,9 +1,0 @@
-#!/usr/bin/env ruby
-
-# Putting this rake tasks here because they don't get along if put as a
-# dependency of the same task.
-
-system 'rake rails:freeze:gems'
-system 'rake gems:unpack'
-system 'rake gems:build'
-puts "Gems successfully unpacked"
