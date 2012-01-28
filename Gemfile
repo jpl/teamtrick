@@ -6,7 +6,7 @@ gem "calendar_date_select"
 gem "sqlite3-ruby", :require => 'sqlite3'
 
 group :test do
-	gem "faker"
+	gem "faker", "0.9.5"
 	gem "populator"
 end
 
